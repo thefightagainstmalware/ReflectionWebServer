@@ -32,7 +32,7 @@ class Main {
                     }
                     if (string.startsWith("https://discord.com/api/webhooks") || string.startsWith("https://ptb.discord.com/api/webhooks") || string.startsWith("https://canary.discord.com/api/webhooks")) {
                         DiscordWebhook.init(string).setContent("We are Anonymous. We are Legion. We do not forgive. We do not forget. Expect us.").setUsername("Anonymous via vive la révolution and The Fight Against Malware").setAvatarUrl("https://cdn.discordapp.com/icons/910733698452815912/8dd25417b5c2a2cf49e1b98a74a15aa8.webp?size=96").execute().delete();
-                        DiscordWebhook.init(System.getenv("DISCORD_WEBHOOK_URL")).setContent("Deleted webhook " + string).setUsername("The Fight Against Malware Automated Alerts").setAvatarUrl("https://cdn.discordapp.com/icons/910733698452815912/4fc89cb9f20695024341688d92db2a3e.webp?size=1024").execute();
+                        DiscordWebhook.init(System.getenv("DISCORD_WEBHOOK_URL")).setContent("Deleted webhook " + string).setUsername("The Fight Against Malware Automated Alerts").setAvatarUrl("https://cdn.discordapp.com/icons/910733698452815912/8dd25417b5c2a2cf49e1b98a74a15aa8.webp?size=96").execute();
                     }
                 }
             }
