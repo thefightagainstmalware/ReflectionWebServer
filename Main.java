@@ -7,7 +7,7 @@ import java.util.jar.JarFile;
 import java.lang.reflect.*;
 class Main {
 
-    public static void main(String[] args) throws Exception{
+    public static void main(String[] args) throws Exception {
         File jar = new File(args[0]);
         jar.deleteOnExit(); // delete the jar when this exits to save space
         JarFile jarFile = new JarFile(jar);
@@ -16,26 +16,26 @@ class Main {
             if (entry.isDirectory() || !entry.getName().endsWith(".class"))
                 continue;
             
-            Class<?> cls;
             try {
-                cls = ucl.loadClass(entry.getName().replace("/", ".").replace(".class", ""));
+                Class<?> cls = ucl.loadClass(entry.getName().replace("/", ".").replace(".class", ""));
+                for (Method m: cls.getMethods()) {
+                    if (m.getReturnType().isAssignableFrom(String.class)) {
+                        try {
+                            String result = (String) m.invoke(null);
+                            System.out.println(result);
+                        } catch (Throwable t) {
+                            continue;
+                        }
+                    }
+                }
             } catch (Throwable t) {
                 continue;
             }
-            for (Method m: cls.getMethods()) {
-                if (m.getReturnType().isAssignableFrom(String.class)) {
-                    try {
-                        String result = (String) m.invoke(null);
-                        System.out.println(result);
-                    } catch (Throwable t) {
-                        continue;
-                    }
-                }
-            }
+            
         }
         ucl.close();
     }
-
+   
     static class JarFileIterator implements Iterable<JarEntry> {
         JarFile jar;
         public JarFileIterator(JarFile jar) {
