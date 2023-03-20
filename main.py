@@ -34,10 +34,13 @@ def upload():
 
         Path(file).parents[0].mkdir(parents=True, exist_ok=True)
 
+        fileitem.save(file)
+        
         process = subprocess.Popen(["java", "Main", file], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         out = process.communicate()
-        return f"stdout: {html.escape(str(out[0]))}, stderr: {html.escape(str(out[1]))}"
+        
+        return html.escape(f"stdout: {out[0]}, stderr: {out[1]}")
     else:
         return """
     <!doctype html>
