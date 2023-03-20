@@ -1,28 +1,14 @@
-from flask import Flask, request, make_response
+from flask import Flask, request, make_response, redirect
 from werkzeug.security import safe_join
 from pathlib import Path
-import subprocess, os
-
-list_of_subprocesses = []
+import subprocess, html
 
 app = Flask("reflectionwebserver")
 
 
-def relFilePaths(directory):
-    """Get a list of all files with absolute file paths"""
-    for dirpath, _, filenames in os.walk(directory):
-        for f in filenames:
-            yield os.path.relpath(os.path.join(dirpath, f), directory)
-
-def cleanup_subprocesses():
-    for i in range(len(list_of_subprocesses)):
-        process = list_of_subprocesses[i]
-        if process.returncode is None:
-            list_of_subprocesses.pop(i)
-
 @app.route("/")
-def hi():
-    return "hi"
+def index():
+    return redirect("/upload")
 
 
 @app.route("/upload", methods=["GET", "POST"])
@@ -43,26 +29,15 @@ def upload():
 
         file = safe_join(folder, "tmp.jar")
 
-        try:
-            Path(file).parents[0].mkdir(parents=True)
-        except FileExistsError:
-            pass
+        if file == None:
+            return "Unsafe file name detected"
 
-        fileitem.save(file)
-        subprocess.call(["unzip", "-o", file, "-d", folder])
-        for i in relFilePaths(folder):
-            if not i.endswith(".class"):
-                continue
-            subprocess.Popen(
-                [
-                    "/usr/bin/java",
-                    "Main",
-                    fname,
-                    i.replace("/", ".").replace("class", "").strip("."),
-                ]
-            )
+        Path(file).parents[0].mkdir(parents=True, exist_ok=True)
 
-        return "We do a little trolling"
+        process = subprocess.Popen(["java", "Main", file], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+        out = process.communicate()
+        return f"stdout: {html.escape(str(out[0]))}, stderr: {html.escape(str(out[1]))}"
     else:
         return """
     <!doctype html>
