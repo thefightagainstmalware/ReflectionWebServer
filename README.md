@@ -1,6 +1,5 @@
 # ReflectionWebServer
-Uses reflection to find Discord webhooks within Minecraft mods
-
+Uses reflection to find Strings within obfuscated files 
 ## Security consideration
 This program executes malware code within your computer. You should run it on a VM or ideally a Docker container
 
